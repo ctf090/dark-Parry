@@ -26,4 +26,4 @@ O `.jar` fica em `build/libs/`.
 
 ## Licença
 
-Veja o arquivo `LICENSE`.
+CC BY-NC 4.0: pode usar e modificar com crédito, mas não pode vender nem usar comercialmente. Veja o arquivo `LICENSE`.
