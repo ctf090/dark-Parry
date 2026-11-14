@@ -20,6 +20,7 @@ Mod Fabric para Minecraft com combate estilo Dark Souls.
 - Java 21 ou mais novo
 
 ## Compilar
+Rode: ./gradlew build
 
 O `.jar` fica em `build/libs/`.
 
