@@ -27,3 +27,9 @@ O `.jar` fica em `build/libs/`.
 ## Licença
 
 CC BY-NC 4.0: pode usar e modificar com crédito, mas não pode vender nem usar comercialmente. Veja o arquivo `LICENSE`.
+
+## Uso comercial
+
+A licença CC BY-NC 4.0 não permite vender nem cobrar pelo mod. Quem quiser usá-lo comercialmente precisa da minha autorização por escrito. A condição é repassar 49% da receita.
+
+Contato: Discord ctf_xyph
