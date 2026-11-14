@@ -1,0 +1,32 @@
+{
+        "schemaVersion": 1,
+        "id": "dark-mod",
+        "version": "1.0.0",
+        "name": "Dark Mod",
+        "description": "Avanço (R) em qualquer direção com WASD e defesa com botão direito.",
+        "authors": [
+                "ctf090"
+        ],
+        "license": "MIT",
+        "environment": "*",
+        "entrypoints": {
+                "main": [
+                        "com.darkmod.DarkMod"
+                ],
+                "client": [
+                        "com.darkmod.client.DarkModClient"
+                ]
+        },
+        "mixins": [
+                {
+                        "config": "dark-mod.client.mixins.json",
+                        "environment": "client"
+                }
+        ],
+        "depends": {
+                "fabricloader": ">=0.18.0",
+                "minecraft": "*",
+                "java": ">=21",
+                "fabric-api": "*"
+        }
+}
