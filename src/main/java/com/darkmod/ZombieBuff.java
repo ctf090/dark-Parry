@@ -72,7 +72,11 @@ public final class ZombieBuff {
 			float w = r.nextFloat();
 			Item weapon = w < 0.20F ? Items.IRON_SWORD : w < 0.30F ? Items.BOW : w < 0.40F ? Items.CROSSBOW : null;
 			if (weapon != null) {
-				mob.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(weapon));
+				ItemStack held = new ItemStack(weapon);
+				if (weapon == Items.BOW || weapon == Items.CROSSBOW) {
+					held.set(net.minecraft.core.component.DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
+				}
+				mob.setItemSlot(EquipmentSlot.MAINHAND, held);
 				mob.setDropChance(EquipmentSlot.MAINHAND, DROP_CHANCE);
 			}
 			if (r.nextFloat() < 0.5F) {

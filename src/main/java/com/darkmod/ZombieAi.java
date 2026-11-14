@@ -2,7 +2,14 @@ package com.darkmod;
 
 import java.util.EnumSet;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -111,9 +118,22 @@ public final class ZombieAi {
                         cooldown = SHOOT_COOLDOWN;
                 }
 
+                private Holder<Potion> pickEffect() {
+                        java.util.List<Holder<Potion>> pool = java.util.List.of(
+                                        Potions.POISON, Potions.STRONG_POISON, Potions.HARMING,
+                                        Potions.WEAKNESS, Potions.SLOWNESS, Potions.STRONG_SLOWNESS);
+                        return pool.get(java.util.concurrent.ThreadLocalRandom.current().nextInt(pool.size()));
+                }
+
                 private void shoot(LivingEntity t) {
                         ServerLevel level = (ServerLevel) mob.level();
-                        Arrow arrow = new Arrow(level, mob, new ItemStack(Items.ARROW), mob.getMainHandItem());
+                        ItemStack ammo = new ItemStack(Items.TIPPED_ARROW);
+                        ammo.set(DataComponents.POTION_CONTENTS, new PotionContents(pickEffect()));
+                        Arrow arrow = new Arrow(level, mob, ammo, mob.getMainHandItem());
+                        arrow.setBaseDamage(3.5);
+                        if (java.util.concurrent.ThreadLocalRandom.current().nextFloat() < 0.4F) {
+                                arrow.igniteForSeconds(5.0F);
+                        }
                         double dx = t.getX() - mob.getX();
                         double dz = t.getZ() - mob.getZ();
                         double dy = t.getEyeY() - arrow.getY();
@@ -180,6 +200,9 @@ public final class ZombieAi {
 
                 @Override
                 public void tick() {
+                        if (mob.tickCount % 10 == 0) {
+                                mob.addEffect(new MobEffectInstance(MobEffects.SPEED, 30, 1));
+                        }
                         if (mob.getNavigation().isDone()) {
                                 mob.getNavigation().moveTo(fx, mob.getY(), fz, FLEE_SPEED);
                         }
