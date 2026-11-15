@@ -30,6 +30,16 @@ CC BY-NC 4.0: pode usar e modificar com crédito, mas não pode vender nem usar 
 
 ## Uso comercial
 
-A licença CC BY-NC 4.0 não permite vender nem cobrar pelo mod. Quem quiser usá-lo comercialmente precisa da minha autorização por escrito. A condição é repassar 49% da receita.
+A licença CC BY-NC 4.0 não permite vender nem cobrar pelo mod. Os 14% abaixo não fazem parte dela e não são uma obrigação automática.
+
+Quem quiser usar o mod comercialmente precisa de uma autorização comercial separada, feita por acordo escrito comigo. Minha condição de negociação para essa autorização é 14%.
+
+O contrato comercial deve definir:
+
+- a base de cálculo dos 14% (receita bruta ou lucro líquido);
+- a duração do acordo;
+- a forma de pagamento.
+
+Sem esse acordo escrito, vale só a CC BY-NC 4.0 (uso não comercial).
 
 Contato: Discord ctf_xyph
