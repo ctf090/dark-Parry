@@ -71,6 +71,7 @@ public final class ParryHandler {
 		PayloadTypeRegistry.serverboundPlay().register(SlamPayload.TYPE, SlamPayload.CODEC);
 		PayloadTypeRegistry.clientboundPlay().register(EnergyPayload.TYPE, EnergyPayload.CODEC);
 		EnergyHandler.init();
+		GrabHandler.init();
 
 		ServerPlayNetworking.registerGlobalReceiver(SwapPayload.TYPE,
 				(payload, context) -> swapHealthFood(context.player(), payload.toFood()));

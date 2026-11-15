@@ -4,6 +4,8 @@ import com.darkmod.DarkMod;
 import com.darkmod.ChargePayload;
 import com.darkmod.EnergyHandler;
 import com.darkmod.EnergyPayload;
+import com.darkmod.GrabEscapePayload;
+import com.darkmod.GrabPayload;
 import com.darkmod.GuardPayload;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.network.chat.Component;
@@ -44,6 +46,7 @@ public class DarkModClient implements ClientModInitializer {
 	private boolean slamming = false;
 	private double peakY = 0;
 	private int chargeTicks = 0;
+	private static volatile boolean grabbed = false;
 	private boolean jumpArmed = false;
 	private int airJumps = 0;
 
@@ -51,6 +54,43 @@ public class DarkModClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(EnergyPayload.TYPE,
 				(payload, context) -> context.client().execute(() -> energy = payload.energy()));
+
+		// Agarrão do zumbi: servidor avisa (1 = agarrado, 0 = soltou, 2 = lançar para cima).
+		ClientPlayNetworking.registerGlobalReceiver(GrabPayload.TYPE,
+				(payload, context) -> context.client().execute(() -> {
+					int s = payload.state();
+					if (s == 1) grabbed = true;
+					else if (s == 0) grabbed = false;
+					else if (s == 2 && context.client().player != null) {
+						context.client().player.setDeltaMovement(0, 0.9, 0);
+					}
+				}));
+
+		// Agarrado: conta os apertos de Espaço, solta as teclas de movimento e bloqueia o avanço.
+		ClientTickEvents.START_CLIENT_TICK.register(client -> {
+			if (!grabbed || client.player == null) return;
+			while (client.options.keyJump.consumeClick()) ClientPlayNetworking.send(new GrabEscapePayload());
+			while (PARRY_KEY.consumeClick()) {}
+			client.options.keyUp.setDown(false);
+			client.options.keyDown.setDown(false);
+			client.options.keyLeft.setDown(false);
+			client.options.keyRight.setDown(false);
+			client.options.keyJump.setDown(false);
+			client.options.keyShift.setDown(false);
+			client.options.keySprint.setDown(false);
+		});
+
+		// Agarrado: fica parado no lugar (só cai se estiver no ar).
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			if (client.player == null) {
+				grabbed = false;
+				return;
+			}
+			if (grabbed) {
+				Vec3 gv = client.player.getDeltaMovement();
+				client.player.setDeltaMovement(0, Math.min(gv.y, 0), 0);
+			}
+		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (cooldown > 0) cooldown--;

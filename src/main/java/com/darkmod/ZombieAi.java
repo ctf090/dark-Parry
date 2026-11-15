@@ -31,7 +31,7 @@ public final class ZombieAi {
         private ZombieAi() {}
 
         // Chance de o escudo bloquear um golpe seu (0.4 = 2 a cada 5, em média).
-        private static final float SHIELD_BLOCK_CHANCE = 0.4F;
+        private static final float SHIELD_BLOCK_CHANCE = 0.6F;
 
         public static void init() {
                 ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
@@ -88,6 +88,7 @@ public final class ZombieAi {
         static final class ShootGoal extends Goal {
                 private final Zombie mob;
                 private int cooldown;
+                private boolean seesTarget;
 
                 ShootGoal(Zombie mob) {
                         this.mob = mob;
@@ -100,7 +101,9 @@ public final class ZombieAi {
 
                 private boolean inRange(LivingEntity t) {
                         double d2 = mob.distanceToSqr(t);
-                        return d2 >= SHOOT_MIN_SQ && d2 <= SHOOT_MAX_SQ && mob.hasLineOfSight(t);
+                        if (d2 < SHOOT_MIN_SQ || d2 > SHOOT_MAX_SQ) return false;
+                        if (mob.tickCount % 5 == 0) seesTarget = mob.hasLineOfSight(t);
+                        return seesTarget;
                 }
 
                 @Override
@@ -222,7 +225,7 @@ public final class ZombieAi {
                 @Override
                 public void tick() {
                         if (mob.tickCount % 10 == 0) {
-                                mob.addEffect(new MobEffectInstance(MobEffects.SPEED, 30, 1));
+                                mob.addEffect(new MobEffectInstance(MobEffects.SPEED, 30, 1, false, false));
                         }
                         if (mob.getNavigation().isDone()) {
                                 mob.getNavigation().moveTo(fx, mob.getY(), fz, FLEE_SPEED);

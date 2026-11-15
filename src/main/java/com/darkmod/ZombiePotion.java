@@ -44,7 +44,7 @@ public final class ZombiePotion {
 				Zombie z = e.getKey();
 				if (z.isRemoved() || !z.isAlive()) { it.remove(); continue; }
 				long now = z.level().getGameTime();
-				if (now < e.getValue()) continue;
+				if (now < e.getValue() || now % 5 != 0) continue;
 				LivingEntity t = z.getTarget();
 				if (t == null) continue;
 				double d2 = z.distanceToSqr(t);

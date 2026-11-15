@@ -51,13 +51,13 @@ public final class ZombieBuff {
 				hp.setBaseValue(hp.getBaseValue() + 10.0);
 				mob.setHealth(mob.getMaxHealth());
 			}
-			mob.addEffect(new MobEffectInstance(MobEffects.REGENERATION, MobEffectInstance.INFINITE_DURATION, 0));
+			mob.addEffect(new MobEffectInstance(MobEffects.REGENERATION, MobEffectInstance.INFINITE_DURATION, 0, false, false));
 			if (r.nextFloat() < 0.25F) {
 				java.util.List<MobEffectInstance> good = new java.util.ArrayList<>(java.util.List.of(
-						new MobEffectInstance(MobEffects.JUMP_BOOST, MobEffectInstance.INFINITE_DURATION, 4),
-						new MobEffectInstance(MobEffects.RESISTANCE, MobEffectInstance.INFINITE_DURATION, 0),
-						new MobEffectInstance(MobEffects.ABSORPTION, MobEffectInstance.INFINITE_DURATION, 1),
-						new MobEffectInstance(MobEffects.FIRE_RESISTANCE, MobEffectInstance.INFINITE_DURATION, 0)));
+						new MobEffectInstance(MobEffects.JUMP_BOOST, MobEffectInstance.INFINITE_DURATION, 4, false, false),
+						new MobEffectInstance(MobEffects.RESISTANCE, MobEffectInstance.INFINITE_DURATION, 0, false, false),
+						new MobEffectInstance(MobEffects.ABSORPTION, MobEffectInstance.INFINITE_DURATION, 1, false, false),
+						new MobEffectInstance(MobEffects.FIRE_RESISTANCE, MobEffectInstance.INFINITE_DURATION, 0, false, false)));
 				java.util.Collections.shuffle(good);
 				mob.addEffect(good.get(0));
 				mob.addEffect(good.get(1));
@@ -67,8 +67,8 @@ public final class ZombieBuff {
 				ZombiePotion.track(mob);
 			}
 			if (r.nextFloat() < 0.30F) {
-				mob.addEffect(new MobEffectInstance(MobEffects.STRENGTH, MobEffectInstance.INFINITE_DURATION, 0));
-				mob.addEffect(new MobEffectInstance(MobEffects.SPEED, MobEffectInstance.INFINITE_DURATION, 1));
+				mob.addEffect(new MobEffectInstance(MobEffects.STRENGTH, MobEffectInstance.INFINITE_DURATION, 0, false, false));
+				mob.addEffect(new MobEffectInstance(MobEffects.SPEED, MobEffectInstance.INFINITE_DURATION, 1, false, false));
 			}
 			float w = r.nextFloat();
 			Item weapon = w < 0.20F ? Items.IRON_SWORD : w < 0.30F ? Items.BOW : w < 0.40F ? Items.CROSSBOW : null;
