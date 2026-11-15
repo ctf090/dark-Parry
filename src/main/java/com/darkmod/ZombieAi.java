@@ -2,6 +2,9 @@ package com.darkmod;
 
 import java.util.EnumSet;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.minecraft.world.entity.player.Player;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
@@ -26,6 +29,19 @@ public final class ZombieAi {
         private static final int SHOOT_COOLDOWN = 40;        // 2 s
 
         private ZombieAi() {}
+
+        // Chance de o escudo bloquear um golpe seu (0.4 = 2 a cada 5, em média).
+        private static final float SHIELD_BLOCK_CHANCE = 0.4F;
+
+        public static void init() {
+                ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+                        if (entity instanceof Zombie z && z.isBlocking() && source.getEntity() instanceof Player
+                                        && java.util.concurrent.ThreadLocalRandom.current().nextFloat() >= SHIELD_BLOCK_CHANCE) {
+                                z.stopUsingItem(); // abaixa o escudo e o golpe passa
+                        }
+                        return true;
+                });
+        }
 
         public static void attach(Zombie mob) {
                 mob.getGoalSelector().addGoal(1, new ShieldGoal(mob));
@@ -56,6 +72,11 @@ public final class ZombieAi {
                 @Override
                 public void start() {
                         mob.startUsingItem(InteractionHand.OFF_HAND);
+                }
+
+                @Override
+                public void tick() {
+                        if (!mob.isUsingItem()) mob.startUsingItem(InteractionHand.OFF_HAND);
                 }
 
                 @Override

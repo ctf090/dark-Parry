@@ -44,6 +44,8 @@ public class DarkModClient implements ClientModInitializer {
 	private boolean slamming = false;
 	private double peakY = 0;
 	private int chargeTicks = 0;
+	private boolean jumpArmed = false;
+	private int airJumps = 0;
 
 	@Override
 	public void onInitializeClient() {
@@ -107,6 +109,22 @@ public class DarkModClient implements ClientModInitializer {
 			}
 
 			if (player.onGround()) peakY = player.getY(); else peakY = Math.max(peakY, player.getY());
+
+			// Pulo duplo: um pulo extra no ar, ao apertar Espaço de novo.
+			if (player.onGround() || player.isInWater()) {
+				airJumps = 0;
+				jumpArmed = false;
+				while (client.options.keyJump.consumeClick()) {}
+			} else if (airJumps < 1 && !slamming && !player.getAbilities().flying) {
+				if (!jumpArmed) {
+					while (client.options.keyJump.consumeClick()) {}
+					if (!client.options.keyJump.isDown()) jumpArmed = true;
+				} else if (client.options.keyJump.consumeClick()) {
+					Vec3 jv = player.getDeltaMovement();
+					player.setDeltaMovement(jv.x, 0.6, jv.z);
+					airJumps++;
+				}
+			}
 			// Pisão: Shift no ar, já caindo, despenca rápido. Ao tocar o chão, avisa o servidor.
 			if (!slamming && !player.onGround() && client.options.keyShift.isDown()
 					&& player.getDeltaMovement().y < 0 && energy >= 1) {

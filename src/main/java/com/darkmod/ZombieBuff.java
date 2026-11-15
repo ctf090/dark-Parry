@@ -38,6 +38,7 @@ public final class ZombieBuff {
 
 	public static void init() {
 		ZombiePotion.init();
+		ZombieAi.init();
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
 			if (!(entity instanceof Zombie mob)) return;
 			ZombieAi.attach(mob);
