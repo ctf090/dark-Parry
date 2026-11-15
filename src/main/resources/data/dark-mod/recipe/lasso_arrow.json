@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": "minecraft:arrow",
+    "B": "minecraft:string"
+  },
+  "result": {
+    "id": "dark-mod:lasso_arrow",
+    "count": 9
+  }
+}

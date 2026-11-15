@@ -3,5 +3,7 @@
   "key.dark-mod.parry": "Avanço (R)",
   "key.dark-mod.guard": "Defesa (aparo)",
   "key.dark-mod.swap": "Troca vida/fome (Shift = vida→fome, Espaço = fome→vida)",
-  "item.dark-mod.energy_apple": "Stamina Apple"
+  "item.dark-mod.energy_apple": "Stamina Apple",
+  "item.dark-mod.lasso_arrow": "Lasso Arrow",
+  "item.dark-mod.slime_arrow": "Slime Arrow"
 }

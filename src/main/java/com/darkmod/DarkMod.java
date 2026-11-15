@@ -13,5 +13,10 @@ public class DarkMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ParryHandler.init();
+		LassoArrow.init();
+		LassoProjectile.init();
+		LassoPull.init();
+		SlimeArrow.init();
+		SlimeProjectile.init();
 	}
 }

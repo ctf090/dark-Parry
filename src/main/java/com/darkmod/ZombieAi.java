@@ -26,7 +26,9 @@ public final class ZombieAi {
         private static final double SHIELD_RANGE_SQ = 36.0;  // 6 blocos
         private static final double SHOOT_MIN_SQ = 16.0;     // 4 blocos
         private static final double SHOOT_MAX_SQ = 256.0;    // 16 blocos
-        private static final int SHOOT_COOLDOWN = 40;        // 2 s
+        private static final int SHOOT_COOLDOWN = 40;        // 2 s (flecha normal)
+        private static final int SLIME_COOLDOWN = 180;  // 9 s (bola de slime)
+        private static final float SHOOT_CHANCE = 0.3F;
 
         private ZombieAi() {}
 
@@ -47,6 +49,7 @@ public final class ZombieAi {
                 mob.getGoalSelector().addGoal(1, new ShieldGoal(mob));
                 mob.getGoalSelector().addGoal(1, new ShootGoal(mob));
                 mob.getGoalSelector().addGoal(0, new FleeGoal(mob));
+                mob.getGoalSelector().addGoal(1, new ZombieLassoGoal(mob));
         }
 
         static final class ShieldGoal extends Goal {
@@ -88,6 +91,8 @@ public final class ZombieAi {
         static final class ShootGoal extends Goal {
                 private final Zombie mob;
                 private int cooldown;
+                private int arrowCooldown;
+                private int slimeCooldown;
                 private boolean seesTarget;
 
                 ShootGoal(Zombie mob) {
@@ -120,6 +125,8 @@ public final class ZombieAi {
                 @Override
                 public void start() {
                         cooldown = 0;
+                        arrowCooldown = 0;
+                        slimeCooldown = 0;
                         mob.getNavigation().stop();
                 }
 
@@ -131,15 +138,19 @@ public final class ZombieAi {
                 @Override
                 public void tick() {
                         mob.getNavigation().stop(); // para de andar enquanto atira
-                        if (cooldown > 0) {
-                                cooldown--;
-                                return;
-                        }
+                        if (arrowCooldown > 0) arrowCooldown--;
+                        if (slimeCooldown > 0) slimeCooldown--;
                         LivingEntity t = mob.getTarget();
                         if (t == null) return;
                         mob.getLookControl().setLookAt(t, 30.0F, 30.0F);
-                        shoot(t);
-                        cooldown = SHOOT_COOLDOWN;
+                        if (arrowCooldown <= 0) {
+                                shootArrow(t);
+                                arrowCooldown = SHOOT_COOLDOWN;
+                        }
+                        if (slimeCooldown <= 0) {
+                                slimeCooldown = SLIME_COOLDOWN;
+                                if (java.util.concurrent.ThreadLocalRandom.current().nextFloat() < SHOOT_CHANCE) shootSlime(t);
+                        }
                 }
 
                 private Holder<Potion> pickEffect() {
@@ -149,7 +160,7 @@ public final class ZombieAi {
                         return pool.get(java.util.concurrent.ThreadLocalRandom.current().nextInt(pool.size()));
                 }
 
-                private void shoot(LivingEntity t) {
+                private void shootArrow(LivingEntity t) {
                         ServerLevel level = (ServerLevel) mob.level();
                         ItemStack ammo = new ItemStack(Items.TIPPED_ARROW);
                         ammo.set(DataComponents.POTION_CONTENTS, new PotionContents(pickEffect()));
@@ -166,6 +177,19 @@ public final class ZombieAi {
                         double drop = 0.025 * tt * tt;
                         arrow.shoot(dx, dy + drop, dz, 2.5F, 0.0F);
                         level.addFreshEntity(arrow);
+                }
+
+                private void shootSlime(LivingEntity t) {
+                        ServerLevel level = (ServerLevel) mob.level();
+                        SlimeProjectile slime = new SlimeProjectile(level, mob, new ItemStack(SlimeArrow.SLIME_ARROW));
+                        double dx = t.getX() - mob.getX();
+                        double dz = t.getZ() - mob.getZ();
+                        double dy = t.getEyeY() - slime.getY();
+                        double h = Math.sqrt(dx * dx + dz * dz);
+                        double tt = h / 1.5;
+                        double drop = 0.025 * tt * tt;
+                        slime.shoot(dx, dy + drop, dz, 1.5F, 0.0F);
+                        level.addFreshEntity(slime);
                 }
         }
 

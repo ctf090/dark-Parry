@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": "minecraft:arrow",
+    "B": "minecraft:slime_ball"
+  },
+  "result": {
+    "id": "dark-mod:slime_arrow",
+    "count": 9
+  }
+}

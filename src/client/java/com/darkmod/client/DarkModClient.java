@@ -1,6 +1,10 @@
 package com.darkmod.client;
 
 import com.darkmod.DarkMod;
+import com.darkmod.LassoProjectile;
+import com.darkmod.SlimeProjectile;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import com.darkmod.ChargePayload;
 import com.darkmod.EnergyHandler;
 import com.darkmod.EnergyPayload;
@@ -52,6 +56,8 @@ public class DarkModClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		EntityRendererRegistry.register(LassoProjectile.TYPE, ThrownItemRenderer::new);
+		EntityRendererRegistry.register(SlimeProjectile.TYPE, ThrownItemRenderer::new);
 		ClientPlayNetworking.registerGlobalReceiver(EnergyPayload.TYPE,
 				(payload, context) -> context.client().execute(() -> energy = payload.energy()));
 
